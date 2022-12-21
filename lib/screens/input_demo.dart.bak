@@ -1,0 +1,83 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class InputDemo2 extends StatefulWidget {
+  const InputDemo({Key? key}) : super(key: key);
+  @override
+  _InputDemoState createState() => _InputDemoState();
+}
+
+class _InputDemoState extends State<InputDemo2> {
+  TextEditingController num1 = new TextEditingController();
+  TextEditingController num2 = new TextEditingController();
+  String result = "";
+  String operation = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: num1,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: num2,
+                ),
+              ),
+            ),
+          ],
+        ),
+        RadioListTile(
+            title: Text("Add"),
+            value: "add",
+            groupValue: operation,
+            onChanged: (String? value) {
+              setState(() {
+                operation = value.toString();
+              });
+            }
+        ),
+        RadioListTile(
+            title: Text("Substract"),
+            value: "sub",
+            groupValue: operation,
+            onChanged: (String? value) {
+              setState(() {
+                operation = value.toString();
+              });
+            }
+        ),
+        ElevatedButton(
+            onPressed: () {
+              if(operation == "add"){
+                setState(() {
+                  result =
+                      (int.parse(num1.text) + int.parse(num2.text)).toString();
+                });
+              }
+              if(operation == "sub"){
+                setState(() {
+                  result =
+                      (int.parse(num1.text) - int.parse(num2.text)).toString();
+                });
+              }
+            },
+            child: Text("Compute")),
+        Container(
+          margin: EdgeInsets.all(10),
+          child: Text("$result"),
+        )
+      ],
+    );
+  }
+}
