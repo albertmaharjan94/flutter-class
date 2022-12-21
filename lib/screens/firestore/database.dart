@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:first_app_a/models/product_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -45,31 +46,35 @@ class _FireDatabaseScreenState extends State<FireDatabaseScreen> {
             if (snapshot.hasError) return Text("Error");
             return ListView(
               children: [
-                ...snapshot.data.docs.map((document) => 
-                    ListTile(
-                      trailing: Wrap(
-                        children: [
-                          InkWell(
-                            onTap: (){
-                              Navigator.of(context)
-                                  .pushNamed("/edit-product",
-                                  arguments: document.id);
-                            },
-                            child: Icon(Icons.edit),
-                          ),
-                          InkWell(
-                            onTap: (){
-                              deleteProduct(document.id);
-                            },
-                            child: Icon(Icons.delete),
-                          )
-                        ],
-                      ),
-                      title : Text(
-                        document["productName"],
-                        style: TextStyle(fontSize: 30),
-                      ),
-                    )),
+                ...snapshot.data.docs.map((document)
+                    {
+                      ProductModel product = ProductModel.fromJson(document.data());
+                      return ListTile(
+                        trailing: Wrap(
+                          children: [
+                            InkWell(
+                              onTap: (){
+                                Navigator.of(context)
+                                    .pushNamed("/edit-product",
+                                    arguments: document.id);
+                              },
+                              child: Icon(Icons.edit),
+                            ),
+                            InkWell(
+                              onTap: (){
+                                deleteProduct(document.id);
+                              },
+                              child: Icon(Icons.delete),
+                            )
+                          ],
+                        ),
+                        title : Text(
+                          product.productName,
+                          style: TextStyle(fontSize: 30),
+                        ),
+                      );
+                    }
+                ),
               ],
             );
           }),

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:first_app_a/models/product_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 class AddProductScreen extends StatefulWidget {
@@ -12,11 +13,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
   TextEditingController productPrice = new TextEditingController();
   Future<void> addProduct() async {
     FirebaseFirestore db = FirebaseFirestore.instance;
-    final data = {
-      "productName": productName.text,
-      "productPrice": productPrice.text,
-    }; // map of string key and any data type as values //
-    db.collection("products").add(data).then((value){
+
+    final data = ProductModel(
+        productName: productName.text,
+        productPrice: productPrice.text
+    );
+
+    db.collection("products").add(data.toJson()).then((value){
       print(value.id);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Product added successfully"))
