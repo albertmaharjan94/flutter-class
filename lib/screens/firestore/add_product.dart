@@ -11,7 +11,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   TextEditingController productName = new TextEditingController();
   TextEditingController productPrice = new TextEditingController();
-  Future<void> addProduct() async {
+  void addProduct() async {
     FirebaseFirestore db = FirebaseFirestore.instance;
 
     final data = ProductModel(
