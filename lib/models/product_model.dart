@@ -13,18 +13,26 @@ class ProductModel {
   ProductModel({
     required this.productName,
     required this.productPrice,
+    required this.imageUrl,
+    required this.imagePath,
   });
 
   String productName;
   String productPrice;
+  String imageUrl;
+  String imagePath;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
     productName: json["productName"],
     productPrice: json["productPrice"],
+    imageUrl: json["imageUrl"],
+    imagePath: json["imagePath"],
   );
 
   Map<String, dynamic> toJson() => {
     "productName": productName,
     "productPrice": productPrice,
+    "imageUrl": imageUrl,
+    "imagePath": imagePath,
   };
 }
