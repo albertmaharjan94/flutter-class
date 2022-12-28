@@ -14,17 +14,18 @@ class _AddProductScreenState extends State<AddProductScreen> {
   void addProduct() async {
     FirebaseFirestore db = FirebaseFirestore.instance;
 
-    final data = ProductModel(
-        productName: productName.text,
-        productPrice: productPrice.text
-    );
-
-    db.collection("products").add(data.toJson()).then((value){
-      print(value.id);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Product added successfully"))
-      );
-    });
+    // final data = ProductModel(
+    //     productName: productName.text,
+    //     productPrice: productPrice.text,
+    //
+    // );
+    //
+    // db.collection("products").add(data.toJson()).then((value){
+    //   print(value.id);
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(content: Text("Product added successfully"))
+    //   );
+    // });
 
   }
   @override
