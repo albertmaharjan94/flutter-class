@@ -13,7 +13,9 @@ import 'package:first_app_a/screens/layout_demo.dart';
 import 'package:first_app_a/screens/registration/homescreen.dart';
 import 'package:first_app_a/screens/registration/login.dart';
 import 'package:first_app_a/screens/registration/register.dart';
+import 'package:first_app_a/viewmodels/product_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,27 +29,33 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter 123',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ProductViewModel>
+          (create: (_)=>ProductViewModel())
+      ],
+      child: MaterialApp(
+        title: 'Flutter 123',
+        theme: ThemeData(
+          primarySwatch: Colors.red,
+        ),
+        // home: LoginScreen(),
+        initialRoute: "/product",
+        routes: {
+          "/login": (BuildContext context) => LoginScreen(),
+          "/register": (BuildContext context) => RegisterScreen(),
+          "/home": (BuildContext context) => HomeScreen(),
+          "/task": (BuildContext context) => DatabaseScreen(),
+          "/add-task": (BuildContext context) => AddTaskScreen(),
+          "/edit-task": (BuildContext context) => EditTaskScreen(),
+
+
+          // add these line
+          "/product":(BuildContext context) => FireDatabaseScreen(),
+          "/add-product":(BuildContext context) => AddProductScreen(),
+          "/edit-product":(BuildContext context) => EditProductScreen(),
+        },
       ),
-      // home: LoginScreen(),
-      initialRoute: "/product",
-      routes: {
-        "/login": (BuildContext context) => LoginScreen(),
-        "/register": (BuildContext context) => RegisterScreen(),
-        "/home": (BuildContext context) => HomeScreen(),
-        "/task": (BuildContext context) => DatabaseScreen(),
-        "/add-task": (BuildContext context) => AddTaskScreen(),
-        "/edit-task": (BuildContext context) => EditTaskScreen(),
-
-
-        // add these line
-        "/product":(BuildContext context) => FireDatabaseScreen(),
-        "/add-product":(BuildContext context) => AddProductScreen(),
-        "/edit-product":(BuildContext context) => EditProductScreen(),
-      },
     );
   }
 }

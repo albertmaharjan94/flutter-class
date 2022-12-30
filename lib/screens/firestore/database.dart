@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:first_app_a/models/product_model.dart';
 import 'package:first_app_a/repositories/product_repository.dart';
+import 'package:first_app_a/viewmodels/product_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FireDatabaseScreen extends StatefulWidget {
   const FireDatabaseScreen({Key? key}) : super(key: key);
@@ -38,55 +40,69 @@ class _FireDatabaseScreenState extends State<FireDatabaseScreen> {
   }
 
   ProductRepository _productRepository = ProductRepository();
+  late ProductViewModel _productViewModel;
+  @override
+  void initState() {
+    // TODO: implement initState
+    _productViewModel = Provider.of<ProductViewModel>
+      (context, listen: false);
+    _productViewModel.productData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder(
-          stream: _productRepository.getAllData(),
-          builder: (context, AsyncSnapshot<dynamic> snapshot) {
-            if (snapshot.hasError) return Text("Error");
-            return ListView(
-              children: [
-                ...snapshot.data.docs.map((document)
-                    {
-                      ProductModel product =
-                        document.data();
-                      return ListTile(
-                        trailing: Wrap(
-                          children: [
-                            InkWell(
-                              onTap: (){
-                                Navigator.of(context)
-                                    .pushNamed("/edit-product",
-                                    arguments: document.id);
-                              },
-                              child: Icon(Icons.edit),
+    var product = context.watch<ProductViewModel>().products;
+    return Consumer<ProductViewModel>(
+      builder: (context, productVM, child) {
+        return Scaffold(
+          body: StreamBuilder(
+              stream: productVM.products,
+              builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.hasError) return Text("Error");
+                return ListView(
+                  children: [
+                    ...snapshot.data.docs.map((document)
+                        {
+                          ProductModel product =
+                            document.data();
+                          return ListTile(
+                            trailing: Wrap(
+                              children: [
+                                InkWell(
+                                  onTap: (){
+                                    Navigator.of(context)
+                                        .pushNamed("/edit-product",
+                                        arguments: document.id);
+                                  },
+                                  child: Icon(Icons.edit),
+                                ),
+                                InkWell(
+                                  onTap: (){
+                                    deleteProduct(document.id);
+                                  },
+                                  child: Icon(Icons.delete),
+                                )
+                              ],
                             ),
-                            InkWell(
-                              onTap: (){
-                                deleteProduct(document.id);
-                              },
-                              child: Icon(Icons.delete),
-                            )
-                          ],
-                        ),
-                        title : Text(
-                          product.productName,
-                          style: TextStyle(fontSize: 30),
-                        ),
-                      );
-                    }
-                ),
-              ],
-            );
-          }),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.of(context).pushNamed("/add-product");
-        },
-      ),
+                            title : Text(
+                              product.productName,
+                              style: TextStyle(fontSize: 30),
+                            ),
+                          );
+                        }
+                    ),
+                  ],
+                );
+              }),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () {
+              Navigator.of(context).pushNamed("/add-product");
+            },
+          ),
+        );
+      }
     );
   }
 }
