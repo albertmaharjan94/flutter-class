@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:first_app_a/models/product_model.dart';
 import 'package:first_app_a/repositories/product_repository.dart';
+import 'package:first_app_a/services/notification_service.dart';
 import 'package:first_app_a/viewmodels/product_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +63,11 @@ class _FireDatabaseScreenState extends State<FireDatabaseScreen> {
                 if (snapshot.hasError) return Text("Error");
                 return ListView(
                   children: [
+                    ElevatedButton(onPressed: (){
+                      LocalNotificationService
+                          .display("Notification Title",
+                            "Notification Body", "Payload");
+                    },child: Text("Notification Demo")),
                     ...snapshot.data.docs.map((document)
                         {
                           ProductModel product =
