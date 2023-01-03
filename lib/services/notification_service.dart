@@ -25,8 +25,6 @@ class LocalNotificationService{
     print(payload);
   }
 
-
-
   static void display(String title, String body, String payload){
     final id = DateTime.now().millisecondsSinceEpoch ~/1000;
     final NotificationDetails notificationDetails= NotificationDetails(
