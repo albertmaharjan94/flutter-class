@@ -1,47 +1,40 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _Homescreenstate();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-
-
+class _Homescreenstate extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-        length: 2,
+    return Scaffold(
+      body: DefaultTabController(
+        length: 3, // size of tab Note: tabbar must be under tabcontroller or have a tab controller assigned to it
         child: Scaffold(
           appBar: AppBar(
-            title: InkWell(
-              onTap: (){
-
-              },
-              child: Text("Signout"),
-            ),
-            bottom: TabBar(
+            bottom:  // the Length of the tabbar must be the same as length of tabcontroller
+            TabBar(
               tabs: [
-                Tab(
-                  text: "Home",
-                  icon: Icon(Icons.home),
-                ),
-                Tab(
-                  text: "Phone",
-                  icon: Icon(Icons.phone),
-                ),
+                Tab(icon: Icon(Icons.home)),
+                Tab(icon: Icon(Icons.message)),
+                Tab(icon: Icon(Icons.phone)),
               ],
             ),
+            title: const Text('Working with tabs'),
           ),
-          body: TabBarView(
+          body: // the length of the tabbarview must be the same as tabbar
+          const TabBarView(
             children: [
-              Text("Home Tab Clicked"),
-              Text("Phone Tab Clicked")
+              Icon(Icons.home),
+              Icon(Icons.message),
+              Icon(Icons.phone),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

@@ -1,34 +1,30 @@
+// import 'package:arithmetic/screens/Register/register.dart';
+import 'package:first_app_a/screens/registration/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class login extends StatefulWidget {
+  const login({Key? key}) : super(key: key);
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<login> createState() => _login();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _login extends State<login> {
   TextEditingController email = new TextEditingController();
   TextEditingController password = new TextEditingController();
-  bool hidePassword = true;
+  bool showPassword = false;
   final form = GlobalKey<FormState>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final FirebaseAuth _auth= FirebaseAuth.instance;
   Future<void> login() async {
     try{
-      final user = (await _auth.signInWithEmailAndPassword(
+      final user=(await _auth.signInWithEmailAndPassword(
           email: email.text,
           password: password.text)
       ).user;
       if(user!=null){
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                backgroundColor: Colors.green,
-                content: Text("Login Success"))
-        );
-
-        Navigator.of(context).pushReplacementNamed("/home");
+        print("Login success");
+        Navigator.of(context).pushNamed("/homescreen");
       }
     }catch(e){
       ScaffoldMessenger.of(context).showSnackBar(
@@ -36,84 +32,80 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Form(
-        key: form,
-        child: Column(
-          children: [
-            Image.asset(
-              "assets/images/logo.png",
-              height: 100,
-              width: 100,
-            ),
-            Container(
-              margin: EdgeInsets.all(10),
-              child: TextFormField(
-                controller: email,
-                validator: (String? value){
-                  if(value == null || value == ""){
-                    return "Email field is required";
-                  }
-
-                  return null;
-                },
-                decoration: InputDecoration(
-                    hintText: "Enter an email",
-                    prefixIcon: Icon(Icons.accessibility_outlined)),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.all(10),
-              child: TextFormField(
-                controller: password,
-                validator: (String? value){
-                  if(value == null || value == ""){
-                    return "Password field is required";
-                  }
-                  return null;
-                },
-                obscureText: hidePassword,
-                decoration: InputDecoration(
-                    hintText: "Enter your password",
-                    prefixIcon: Icon(Icons.password),
-                    suffixIcon: !hidePassword
-                        ? InkWell(
-                            onTap: () {
-                              setState(() {
-                                hidePassword = !hidePassword;
-                              });
-                            },
-                            child: Icon(Icons.visibility))
-                        : InkWell(
-                            onTap: () {
-                              setState(() {
-                                hidePassword = !hidePassword;
-                              });
-                            },
-                            child: Icon(Icons.visibility_off))),
-              ),
-            ),
-            ElevatedButton(onPressed: (){
-                if(form.currentState!.validate()){
-                  login();
-                }else{
-                  print("Fail");
-                }
-            }, child: Text("Login")),
-            ElevatedButton(
-                onPressed: () {
-                  // Navigator.of(context).push(MaterialPageRoute(
-                  //   builder: (BuildContext context) => RegisterScreen(),
-                  // ));
-                  Navigator.of(context).pushReplacementNamed("/register");
-                },
-                child: Text("Register Now"))
-          ],
+        backgroundColor: Colors.blueGrey,
+        appBar: AppBar(
+          title: Text("Login Page"),
         ),
-      ),
-    );
+        body: Form(
+            key: form,
+            child: Column(
+              children: [
+                Container(
+                  child: Image.asset("assets/image/th.jpg"),
+                ),
+                Container(
+                  margin: EdgeInsets.all(10),
+                  child: TextFormField(
+                    controller: email,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return "Email is required";
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.email),
+                      hintText: "Please Enter Your Email",
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.all(10),
+                  child: TextFormField(
+                      controller: password,
+                      obscureText: !showPassword,
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.password),
+                          hintText: "Please Enter Your Password",
+                          suffixIcon: showPassword
+                              ? InkWell(
+                                  onTap: () {
+                                    setState(() {});
+                                  },
+                                  child: Icon(Icons.panorama_fish_eye))
+                              : InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      showPassword = !showPassword;
+                                    });
+                                  },
+                                  child: Icon(Icons.remove_red_eye)))),
+                ),
+                // Container(),
+                ElevatedButton(
+                  onPressed: () {
+                    if (form.currentState!.validate()) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Login validation success"),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text("Login"),
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(builder: (BuildContext context) => RegisterScreen(),
+                      //   ));
+                      Navigator.of(context).pushNamed("/register");
+                    },
+                    child: Text(" Go to Registration")),
+              ],
+            )));
   }
 }

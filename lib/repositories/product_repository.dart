@@ -4,8 +4,7 @@ import '../models/product_model.dart';
 import '../services/firebase_service.dart';
 
 class ProductRepository{
-  CollectionReference<ProductModel> ref =
-  FirebaseService.db.collection("products")
+  CollectionReference<ProductModel> ref = FirebaseService.db.collection("products")
       .withConverter<ProductModel>(
     fromFirestore: (snapshot, _) {
       return ProductModel.fromFirebaseSnapshot(snapshot);
@@ -20,18 +19,16 @@ class ProductRepository{
   }
 
   Future<ProductModel?> getOneData(String id) async {
-    DocumentSnapshot<ProductModel> response =
-      await ref.doc(id).get();
+    DocumentSnapshot<ProductModel> response = await ref.doc(id).get();
     return response.data();
   }
-
-  // create delete function (Classwork)
-  Future<void> deleteProduct(String id) async{
+ //create delete function(Classwork)
+Future<void>deleteProduct(String id)async{
     await ref.doc(id).delete();
   }
 
-  // create add function
-  Future<void> addProduct(ProductModel data) async {
-    await ref.add(data);
+//create add function
+Future<void>addProduct(ProductModel data) async {
+  await ref.add(data);
   }
 }

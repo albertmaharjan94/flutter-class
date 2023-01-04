@@ -1,93 +1,119 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:first_app_a/models/product_model.dart';
 import 'package:first_app_a/repositories/product_repository.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:first_app_a/services/notification_service.dart';
+import 'package:first_app_a/viewmodels/product_viewmodel.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 class FireDatabaseScreen extends StatefulWidget {
   const FireDatabaseScreen({Key? key}) : super(key: key);
   @override
-  _FireDatabaseScreenState createState() => _FireDatabaseScreenState();
+  State<FireDatabaseScreen> createState() => _FireDatabasescreenstate();
 }
-
-class _FireDatabaseScreenState extends State<FireDatabaseScreen> {
+class _FireDatabasescreenstate extends State<FireDatabaseScreen> {
   FirebaseFirestore db = FirebaseFirestore.instance;
 
-  void deleteProduct(String id) async {
-    // DatabaseReference ref = FirebaseDatabase.instance.ref(); // delete this
-    FirebaseFirestore db  = FirebaseFirestore.instance;
-    showDialog(context: context, builder: (BuildContext context)=>
-        AlertDialog(
-          title: Text("Are you sure you want to delete?"),
-          actions: [
-            ElevatedButton(onPressed: (){
-              _productRepository.deleteProduct(id)
-              .then((value){
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text("Deleted"),));
-              });
-
+  void deleteTask(String id) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text("Are you sure you want to delete"),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              FirebaseFirestore db = FirebaseFirestore.instance;
+              _productViewModel.deleteProduct(id)
+              .then((value)=>
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content:Text("Product deleted"))
+              ));
               Navigator.of(context).pop();
-            }, child: Text("Delete")),
-            ElevatedButton(onPressed: (){
+            },
+            child: Text("Delete"),
+          ),
+          ElevatedButton(
+            onPressed: () {
               Navigator.of(context).pop();
-            }, child: Text("Cancel")),
-          ],
-        )
+            },
+            child: Text("Cancel"),
+          ),
+        ],
+      ),
     );
   }
 
-  ProductRepository _productRepository = ProductRepository();
+  void deleteProduct(String? id) async{
 
+  }
+
+  // ProductRepository _productRepository = ProductRepository();
+  late ProductViewModel _productViewModel;
+  @override
+  void initState() {
+    _productViewModel = Provider.of<ProductViewModel>
+      (context,listen: false);
+    _productViewModel.getProducts();
+
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+    var products = context.watch<ProductViewModel>().products;
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(onPressed: (){
+            NotificationService.display("This is title",
+                "THis is body", "/add-product", context);
+          }, icon: Icon(Icons.notification_important))
+        ],
+      ),
       body: StreamBuilder(
-          stream: _productRepository.getData(),
-          builder: (context,
-              AsyncSnapshot<QuerySnapshot<ProductModel>> snapshot){
-            if (snapshot.hasError) return Text("Error");
-            return ListView(
-              children: [
-                ...snapshot.data!.docs.map((document)
-                    {
-                      ProductModel product =
-                      document.data();
+        stream: products,
+        builder: (context,
+            AsyncSnapshot<QuerySnapshot<ProductModel>> snapshot) {
+          if(snapshot.hasError) return Text("Error");
+          return ListView(
+            children: [
+              ...snapshot.data!.docs.map((document) {
+                ProductModel product = document.data();
+                return ListTile(
+                  title: Text(
+                    product.productName,
+                    style: TextStyle(fontSize: 40),
+                  ),
+                  trailing: Wrap(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(
+                              '/edit_product', arguments: document.id);
+                        },
+                        child: Icon(Icons.edit),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          deleteProduct(document.id);
+                        },
+                        child: Icon(Icons.delete),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ],
+          );
+        }
+      ),
 
-                      return ListTile(
-                        trailing: Wrap(
-                          children: [
-                            InkWell(
-                              onTap: (){
-                                Navigator.of(context)
-                                    .pushNamed("/edit-product",
-                                    arguments: document.id);
-                              },
-                              child: Icon(Icons.edit),
-                            ),
-                            InkWell(
-                              onTap: (){
-                                deleteProduct(document.id);
-                              },
-                              child: Icon(Icons.delete),
-                            )
-                          ],
-                        ),
-                        title : Text(
-                          product.productName,
-                          style: TextStyle(fontSize: 30),
-                        ),
-                      );
-                    }
-                ),
-              ],
-            );
-          }),
+
+
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
+        onPressed: (){
           Navigator.of(context).pushNamed("/add-product");
         },
+        child: Icon(Icons.add),
       ),
     );
   }

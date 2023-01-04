@@ -1,112 +1,117 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
+
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  State<RegisterScreen> createState() => _RegisterScreen();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  TextEditingController email = new TextEditingController();
+class _RegisterScreen extends State<RegisterScreen> {
+  TextEditingController FullName = new TextEditingController();
+  TextEditingController Email = new TextEditingController();
+  TextEditingController PhoneNumber = new TextEditingController();
   TextEditingController password = new TextEditingController();
-  bool hidePassword = true;
-  final form = GlobalKey<FormState>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool showPassword = false;
+  final form=GlobalKey<FormState>();
+
+  final FirebaseAuth _auth=FirebaseAuth.instance;
   Future<void> register() async {
-    try {
+    try{
       final user = (await _auth.createUserWithEmailAndPassword(
-        email: email.text,
-        password: password.text,
+          email: Email.text,
+          password: password.text
       )).user;
-      if (user != null) {
-        print("User created");
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            backgroundColor: Colors.green, content: Text("Register Success")));
-        // Navigator.of(context).pushReplacementNamed("/home");
+      if(user != null){
+        print("User Created");
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.green,
+              content: Text("Registration Success")
+            ));
+        Navigator.of(context).pushReplacementNamed("/home");
       }
-    } catch (e) {
-      print("Error $e");
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
+    }catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString()))
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Form(
-        key: form,
-        child: Column(
-          children: [
-            Image.asset(
-              "assets/images/logo.png",
-              height: 100,
-              width: 100,
-            ),
-            Container(
-              margin: EdgeInsets.all(10),
-              child: TextFormField(
-                controller: email,
-                validator: (String? value) {
-                  if (value == null || value == "") {
-                    return "Email field is required";
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                    hintText: "Enter an email",
-                    prefixIcon: Icon(Icons.accessibility_outlined)),
+      backgroundColor: Colors.yellow,
+      appBar: AppBar(title: Text("Registration"),),
+      body: Column(
+        children: [
+
+
+          Container(
+            margin: EdgeInsets.all(10),
+            child: TextFormField(
+              controller: FullName,
+              decoration: InputDecoration(
+                // prefixIcon: Icon(Icons.),
+                hintText: "Please Enter Your FullName",
               ),
             ),
-            Container(
-              margin: EdgeInsets.all(10),
-              child: TextFormField(
+          ),
+          Container(
+            margin: EdgeInsets.all(10),
+            child: TextFormField(
+              controller: Email,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.email),
+                hintText: "Please Enter Your Email",
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.all(10),
+            child: TextFormField(
+              controller: PhoneNumber,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.phone),
+                hintText: "Please Enter Your Phone Number",
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.all(10),
+            child: TextFormField(
                 controller: password,
-                validator: (String? value) {
-                  if (value == null || value == "") {
-                    return "Password field is required";
-                  }
-                  return null;
-                },
-                obscureText: hidePassword,
+                obscureText: !showPassword,
                 decoration: InputDecoration(
-                    hintText: "Enter your password",
                     prefixIcon: Icon(Icons.password),
-                    suffixIcon: !hidePassword
-                        ? InkWell(
-                            onTap: () {
-                              setState(() {
-                                hidePassword = !hidePassword;
-                              });
-                            },
-                            child: Icon(Icons.visibility))
-                        : InkWell(
-                            onTap: () {
-                              setState(() {
-                                hidePassword = !hidePassword;
-                              });
-                            },
-                            child: Icon(Icons.visibility_off))),
-              ),
+                    hintText: "Please Enter Your Password",
+                    suffixIcon: showPassword ?
+
+                    InkWell(
+                        onTap: (){
+                          setState(() {
+
+                          });
+                        },
+                        child: Icon(Icons.panorama_fish_eye))
+                        :
+                    InkWell(
+                        onTap: (){
+                          setState(() {
+                            showPassword = !showPassword;
+                          });
+                        },
+                        child: Icon(Icons.remove_red_eye))
+                )
             ),
-            ElevatedButton(
-                onPressed: () {
-                  if (form.currentState!.validate()) {
-                    register();
-                  } else {
-                    print("Fail");
-                  }
-                },
-                child: Text("Register Now")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacementNamed("/login");
-                },
-                child: Text("Go to login"))
-          ],
-        ),
+          ),
+          Container(),
+          ElevatedButton(onPressed: (){
+            Navigator.of(context).pop();
+          }, child: Text("Go Back")),
+        ],
       ),
     );
   }

@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class Homepage extends StatefulWidget {
+  const Homepage({Key? key}) : super(key: key);
 
   @override
-  _HomeState createState() => _HomeState();
+  State<Homepage> createState() => _HomepageState();
 }
 
-class _HomeState extends State<Home> {
+class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text("Home Page from folder"),
+      child: Text("My home page"),
     );
   }
 }
