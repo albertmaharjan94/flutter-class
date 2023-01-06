@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:first_app_a/models/product_model.dart';
 import 'package:first_app_a/repositories/product_repository.dart';
+import 'package:first_app_a/services/fcm_service.dart';
 import 'package:first_app_a/services/notification_service.dart';
 import 'package:first_app_a/viewmodels/product_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
@@ -94,6 +95,16 @@ class _FireDatabaseScreenState extends State<FireDatabaseScreen> {
                 if (snapshot.hasError) return Text("Error");
                 return ListView(
                   children: [
+                    ElevatedButton(onPressed: (){
+                      FCMService.sendPushMessage
+                        ("eNrquRCjQPyXINnyqvGdMh:APA91bGLpLcMqK_bLRhVAcSrI9ZK2Z6G1UPLMhTwR-aRHP4Pd74DnNLPRNyRVGrn4We-A7Tj1F9W2u_rdoMev__obOcIRlnjSkXp2ZscYwrW_m7Pv9v5mGRAyzkCmUDkHOtUQeybW3Ck", {
+                          "title" : "Notification Title",
+                          "body": "Notification Body",
+                      }, {
+                          "title": "New notification",
+                          "body": "Body here"
+                      });
+                    },child: Text("Send FCM")),
                     ElevatedButton(onPressed: (){
                       LocalNotificationService
                           .display("Notification Title",
