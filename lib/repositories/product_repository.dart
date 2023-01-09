@@ -27,9 +27,12 @@ class ProductRepository{
   Future<void> deleteProduct(String id) async{
     await ref.doc(id).delete();
   }
-  Future<void> addProduct(ProductModel product) async {
+
+  Future<bool> addProduct(ProductModel product) async {
     await ref.add(product);
+    return true;
   }
+
   Future<void> updateProduct
       (String id, ProductModel product) async {
     await ref.doc(id).set(product);
