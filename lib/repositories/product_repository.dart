@@ -28,7 +28,8 @@ Future<void>deleteProduct(String id)async{
   }
 
 //create add function
-Future<void>addProduct(ProductModel data) async {
+Future<bool>addProduct(ProductModel data) async {
   await ref.add(data);
+  return true;
   }
 }

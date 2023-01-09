@@ -48,6 +48,7 @@ dependencies:
 
   firebase_messaging: ^14.2.1
   http: ^0.13.5
+  fake_cloud_firestore: ^2.0.0
 
 
 
