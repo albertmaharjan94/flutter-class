@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:first_app_a/models/product_model.dart';
 import 'package:first_app_a/repositories/product_repository.dart';
+import 'package:first_app_a/screens/widgets/make_rs_text.dart';
 import 'package:first_app_a/services/notification_service.dart';
 import 'package:first_app_a/viewmodels/product_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -104,6 +105,7 @@ class _FireDatabasescreenstate extends State<FireDatabaseScreen> {
           if(snapshot.hasError) return Text("Error");
           return ListView(
             children: [
+              MakeRsText(price: "100"),
               ...snapshot.data!.docs.map((document) {
                 ProductModel product = document.data();
                 return ListTile(
